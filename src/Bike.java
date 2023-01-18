@@ -3,11 +3,13 @@ public class Bike {
      int price;
      int number;
 
+
      public Bike(String title,int price,int number){
          this.title=title;
          this.price=price;
          this.number=number;
      }
+
 
      public void setTitle(String title){
          this.title=title;
@@ -31,12 +33,8 @@ public class Bike {
         return price;
     }
 
-    @Override
+
     public String toString() {
-        return "Bike{" +
-                "title='" + title + '\n' +
-                ", price=" + price + '\n'+
-                ", number=" + number +
-                '}';
+        return title +" "+price+" "+number;
     }
 }
