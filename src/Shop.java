@@ -6,7 +6,6 @@ public class Shop {
 
     public static void main(String[] args) {
         new Shop().go();
-
     }
 
     public void go() {
@@ -15,7 +14,6 @@ public class Shop {
         System.out.println(bikeArrayList);
 
         menuShop();
-
     }
 
     public void menuShop() {
@@ -59,9 +57,7 @@ public class Shop {
                         changeBike(idEnter, "number");
                     }
                 }
-
             }
-
         }
     }
 
@@ -106,7 +102,6 @@ public class Shop {
         changeBike(addNew, "price");
         changeBike(addNew, "number");
         System.out.println("New Bike Created");
-
     }
 
     public void deletOldBike(int id) {
@@ -125,13 +120,10 @@ public class Shop {
         }
         if (bikeArrayList.size() == 1) {
             System.out.println("In the base must beat one Bike");
-
         }
-
     }
 
     public void getBikeFromTxt() {
-
 
         File file = new File("BikeBase.txt");
 
@@ -172,7 +164,5 @@ public class Shop {
 
         Bike nextBike = new Bike(title, price, number);
         bikeArrayList.add(nextBike);
-
     }
-
 }
