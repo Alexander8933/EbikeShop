@@ -9,13 +9,11 @@ public class Shop {
 
     }
     public void go(){
+
         getBikeFromTxt();
         System.out.println(bikeArrayList);
 
         menuShop();
-        //addNewBike();
-
-
 
 
     }
@@ -23,9 +21,9 @@ public class Shop {
     public void menuShop(){
         int start = 0 ;
         while (start ==0){
-        System.out.println("Show menu :\nEnter : y");
-        System.out.println("Exit\nEnter : e");
-        System.out.println("Add New Bike\nEnter : n");
+        System.out.println("Show menu Enter : y");
+        System.out.println("Exit Enter : e");
+        System.out.println("Add New Bike Enter : n");
         String choice = jobMenu();
         if(choice.equals("n")){addNewBike();}
         if(choice.equals("e")){++start;}
@@ -33,14 +31,14 @@ public class Shop {
             for(Bike temp : bikeArrayList){
                 int id = bikeArrayList.indexOf(temp);
                 System.out.println("Id : "+id);
-                System.out.println( "Title : "+temp.title+" Price : "+temp.price+" Number : "+temp.number);
+                System.out.println( "Title : "+temp.getTitle()+" Price : "+temp.getPrice()+" Number : "+temp.getNumber());
 
             }
             System.out.println("Change Bike Enter Id : ");
             int idEnter =Integer.parseInt(jobMenu());
             if(idEnter<bikeArrayList.size()){
                 Bike temp = bikeArrayList.get(idEnter);
-                System.out.println("Title : "+temp.title+" Price : "+temp.price+" Number : "+temp.number);
+                System.out.println("Title : "+temp.getTitle()+" Price : "+temp.getPrice()+" Number : "+temp.getNumber());
 
                 System.out.println("Change : Title Enter t , Price Enter p , Number Enter n \nDelet Bike Enter d");
                 String tPN = jobMenu();
@@ -72,11 +70,11 @@ public class Shop {
     public void changeBike (int id,String titlePriceNumber){
         Bike temp = bikeArrayList.get(id);
         if(titlePriceNumber.equals("title")){
-            System.out.println("Old title : "+temp.title+"\nEnter new title :");temp.title = jobMenu();}
+            System.out.println("Old title : "+temp.getTitle()+"\nEnter new title :");temp.setTitle(jobMenu());}
         if(titlePriceNumber.equals("price")){
-            System.out.println("Old price : "+temp.price+"\nEnter new price :");temp.price = Integer.parseInt(jobMenu());}
+            System.out.println("Old price : "+temp.getPrice()+"\nEnter new price :");temp.setPrice(Integer.parseInt(jobMenu()));}
         if(titlePriceNumber.equals("number")){
-            System.out.println("Old number : "+temp.number+"\nEnter new number :");temp.number = Integer.parseInt(jobMenu());}
+            System.out.println("Old number : "+temp.getNumber()+"\nEnter new number :");temp.setNumber(Integer.parseInt(jobMenu())) ;}
         bikeArrayList.set(id,temp);
         saveBikeInTxt();
     }
@@ -91,22 +89,25 @@ public class Shop {
     }
     public void deletOldBike(int id){
 
-        if(id<bikeArrayList.size()&&bikeArrayList.size()!=0){
+        if(id<bikeArrayList.size()&&bikeArrayList.size()!=1){
             System.out.println("Old Bike : "+bikeArrayList.get(id));
             System.out.println("Delet : Enter y or n");
             String yesNo = jobMenu();
             if(yesNo.equals("y")){bikeArrayList.remove(id);saveBikeInTxt();}
             if(yesNo.equals("n")){ return;}
         }
-        if(bikeArrayList.size()==0){
+        if(bikeArrayList.size()==1){
             System.out.println("In the base must beat one Bike");
-            return;
+
         }
 
     }
 
     public void getBikeFromTxt() {
-        File file = new File("src", "BikeBase.txt");
+
+
+
+        File file = new File("BikeBase.txt");
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
             String line = null;
@@ -123,10 +124,10 @@ public class Shop {
         }
     }
     public void saveBikeInTxt (){
-        File file = new File("src", "BikeBase.txt");
+        File file = new File("BikeBase.txt");
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
             for(Bike temp : bikeArrayList){
-                bufferedWriter.write(String.valueOf(temp.title+"#"+temp.price+"#"+temp.number+"#"));
+                bufferedWriter.write(String.valueOf(temp.getTitle()+"#"+temp.getPrice()+"#"+temp.getNumber()+"#"));
                 bufferedWriter.newLine();
             }
 

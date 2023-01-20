@@ -1,7 +1,7 @@
 public class Bike {
-     String title;
-     int price;
-     int number;
+    private String title;
+     private  int price;
+     private int number;
 
 
      public Bike(String title,int price,int number){
