@@ -12,6 +12,7 @@ import java.util.ArrayList;
         getBikesFromTxt();
         showMenu();
     }
+    //test
 
     private void showMenu() {
         boolean runMenu = true;
