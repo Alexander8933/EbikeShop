@@ -1,8 +1,10 @@
+package UserInput;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-class UserInput {
-    protected static String get() {
+public class InputTxt {
+    public String get() {
         String line = null;
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
