@@ -11,7 +11,6 @@ public class Bike {
         this.number = number;
     }
 
-
     public String getTextBikePresentation() {
         return "Title : " + title + " Price : " + price + " Number : " + number;
     }
@@ -49,6 +48,5 @@ public class Bike {
     public int getPrice() {
         return price;
     }
-
 
 }
