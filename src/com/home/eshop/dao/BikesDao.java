@@ -1,16 +1,16 @@
-package Dao;
+package com.home.eshop.dao;
 
-import Type.Bike;
+import com.home.eshop.model.Bike;
 
 import java.io.*;
 import java.util.ArrayList;
 
-class BikesDao {
+public class BikesDao {
 
     private ArrayList<Bike> bikes = new ArrayList<Bike>();
     private File file = new File("BikeBase.txt");
 
-    void loadData() {
+    public void loadData() {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
@@ -34,8 +34,7 @@ class BikesDao {
         bikes.add(nextBike);
     }
 
-    //private void saveAll(List bikes)
-    void saveAll() {
+    public void saveAll() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             for (Bike bike : bikes) {
                 bufferedWriter.write(bike.getValueBikeInSaveTxt());
@@ -47,25 +46,21 @@ class BikesDao {
         }
     }
 
-    void delete(int id) {
+    public void delete(int id) {
         bikes.remove(id);
     }
 
-    void update(int id, Bike bike) {
-        bikes.set(id, bike);
-    }
-
-    int save(Bike bike) {
+    public int save(Bike bike) {
         int id = bikes.size();
         bikes.add(id, bike);
         return id;
     }
 
-    Bike findOne(int id) {
+    public Bike findOne(int id) {
         return bikes.get(id);
     }
 
-    int bikesSize() {
+    public int bikesSize() {
         return bikes.size();
     }
 }

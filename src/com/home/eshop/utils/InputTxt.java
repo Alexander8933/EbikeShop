@@ -1,4 +1,4 @@
-package UserInput;
+package com.home.eshop.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

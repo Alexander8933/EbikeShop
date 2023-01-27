@@ -1,7 +1,8 @@
-package Dao;
+package com.home.eshop.presentation;
 
-import Type.Bike;
-import UserInput.InputTxt;
+import com.home.eshop.dao.BikesDao;
+import com.home.eshop.model.Bike;
+import com.home.eshop.utils.InputTxt;
 
 public class Menu {
     private BikesDao bikesDao = new BikesDao();

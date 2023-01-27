@@ -1,4 +1,4 @@
-package Type;
+package com.home.eshop.model;
 
 public class Bike {
     private String title;
