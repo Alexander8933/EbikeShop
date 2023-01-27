@@ -10,7 +10,7 @@ class BikesDao {
     private ArrayList<Bike> bikes = new ArrayList<Bike>();
     private File file = new File("BikeBase.txt");
 
-    void findAll() {
+    void loadData() {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {

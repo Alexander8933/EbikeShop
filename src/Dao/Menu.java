@@ -8,7 +8,7 @@ public class Menu {
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {
-        bikesDao.findAll();
+        bikesDao.loadData();
         boolean runMenu = true;
         do {
             showTitle();
