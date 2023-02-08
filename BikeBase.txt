@@ -1,5 +1,5 @@
-comanche tomahawk#1300#6#
-Ardis#900#22#
-Ardis#1234#4#
-newBike#0#0#
-eee#0#0#
+comanche prairie#1234#10#
+comanche tomahawk#1300#5#
+comanche ontario#1321#4#
+comanche ontario#1800#6#
+comanche ontario#1311#9#
