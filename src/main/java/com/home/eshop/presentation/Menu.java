@@ -4,12 +4,13 @@ import com.home.eshop.dao.BikesDao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
+import java.util.ArrayList;
+
 public class Menu {
     private BikesDao bikesDao = new BikesDao();
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {
-        bikesDao.loadData();
         boolean runMenu = true;
         do {
             showTitle();

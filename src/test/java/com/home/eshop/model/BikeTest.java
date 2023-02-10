@@ -1,81 +1,55 @@
 package com.home.eshop.model;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BikeTest {
 
-    private Bike bikeTest;
-
-    @BeforeEach
-    void prepare() {
-        bikeTest = new Bike("test", 1, 1);
-    }
-
-    @AfterEach
-    void after() {
-        bikeTest = new Bike("test", 1, 1);
-    }
-
+    private Bike bikeTest=new Bike("test", 1, 1);
     @Test
     void getTextBikePresentation() {
-        String bike1 = "Title : " + "test" + " Price : " + "1" + " Number : " + "1";
-        String bike2 = bikeTest.getTextBikePresentation();
-        assertTrue(bike1.equals(bike2));
+        String exp = "Title : " + "test" + " Price : " + "1" + " Number : " + "1";
+        String act = bikeTest.getTextBikePresentation();
+        assertEquals(exp,act);
     }
 
     @Test
     void getValueBikeInSaveTxt() {
-        String bike1 = "test" + "#" + "1" + "#" + "1" + "#";
-        String bike2 = bikeTest.getValueBikeInSaveTxt();
-        assertTrue(bike1.equals(bike2));
+        String exp = "test" + "#" + "1" + "#" + "1" + "#";
+        String act = bikeTest.getValueBikeInSaveTxt();
+        assertEquals(exp,act);
     }
-
     @Test
-    void setTitle() {
-        String title1 = "testTitle";
-        bikeTest.setTitle(title1);
-        String title2 = bikeTest.getTitle();
-        assertTrue(title1.equals(title2));
+    void bikeValueSet(){
+        String titleSetExp = "testTitle";
+        bikeTest.setTitle(titleSetExp);
+        String titleSetAct = bikeTest.getTitle();
+        assertEquals(titleSetExp, titleSetAct);
+
+        int priceSetExp = 11;
+        bikeTest.setPrice(priceSetExp);
+        int priceSetAct = bikeTest.getPrice();
+        assertEquals(priceSetExp, priceSetAct);
+
+        int numberSetExp = 11;
+        bikeTest.setNumber(numberSetExp);
+        int numberSetAct = bikeTest.getNumber();
+        assertEquals(numberSetExp, numberSetAct);
+
     }
-
     @Test
-    void setPrice() {
-        int price1 = 11;
-        bikeTest.setPrice(price1);
-        int price2 = bikeTest.getPrice();
-        assertEquals(price1, price2);
-    }
+    void bikeValueGet(){
+        String titleGetExp = "test";
+        String titleGetAct = bikeTest.getTitle();
+        assertEquals(titleGetExp, titleGetAct);
 
-    @Test
-    void setNumber() {
-        int number1 = 11;
-        bikeTest.setNumber(number1);
-        int number2 = bikeTest.getNumber();
-        assertEquals(number1, number2);
-    }
+        int numberGetExp = 1;
+        int numberGetAct = bikeTest.getNumber();
+        assertEquals(numberGetExp, numberGetAct);
 
-    @Test
-    void getTitle() {
-        String title1 = "test";
-        String title2 = bikeTest.getTitle();
-        assertTrue(title1.equals(title2));
-    }
-
-    @Test
-    void getNumber() {
-        int number1 = 1;
-        int number2 = bikeTest.getNumber();
-        assertEquals(number1, number2);
-    }
-
-    @Test
-    void getPrice() {
-        int price1 = 1;
-        int price2 = bikeTest.getPrice();
-        assertEquals(price1, price2);
+        int priceGetExp = 1;
+        int priceGetAct= bikeTest.getPrice();
+        assertEquals(priceGetExp, priceGetAct);
     }
 }

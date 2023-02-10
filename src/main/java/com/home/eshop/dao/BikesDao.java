@@ -1,22 +1,31 @@
 package com.home.eshop.dao;
 
 import com.home.eshop.model.Bike;
+
 import java.io.*;
 import java.util.ArrayList;
 
 public class BikesDao {
+    public BikesDao() {
+        this.bikes = new ArrayList<Bike>();
+        this.file = new File("BikeBase.txt");
+        loadData(bikes);
+    }
 
-    ArrayList<Bike> bikes = new ArrayList<Bike>();
-    private File file = new File("BikeBase.txt");
+    public BikesDao(ArrayList<Bike> bikes, File file) {
+        this.bikes = bikes;
+        this.file = file;
+    }
 
-    public int loadData() {
-        int id = 0;
+    private ArrayList<Bike> bikes;
+    private File file;
+
+    public void loadData(ArrayList<Bike> bikes) {
         if (bikes.isEmpty()) {
             try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
                 String line = null;
                 while ((line = bufferedReader.readLine()) != null) {
                     addBike(line);
-                    id++;
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("File BikeBase.txt Not Found ");
@@ -25,9 +34,6 @@ public class BikesDao {
                 System.out.println("File BikeBase.txt May be damaged");
                 ex.printStackTrace();
             }
-            return id;
-        } else {
-            return bikes.size();
         }
     }
 
@@ -40,23 +46,25 @@ public class BikesDao {
         bikes.add(nextBike);
     }
 
-    public int saveAll() {
-        int id = 0;
+    public void saveAll() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             for (Bike bike : bikes) {
                 bufferedWriter.write(bike.getValueBikeInSaveTxt());
                 bufferedWriter.newLine();
-                id++;
             }
         } catch (IOException ex) {
             System.out.println("File BikeBase.txt May be damaged");
             ex.printStackTrace();
         }
-        return id;
     }
 
     public void delete(int id) {
-        bikes.remove(id);
+        if (id < bikes.size()) {
+            bikes.remove(id);
+        } else {
+            System.out.println("id not found");
+        }
+
     }
 
     public int save(Bike bike) {
