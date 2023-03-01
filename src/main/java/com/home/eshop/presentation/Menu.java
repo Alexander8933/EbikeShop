@@ -4,13 +4,12 @@ import com.home.eshop.dao.BikesDao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
-import java.util.ArrayList;
-
 public class Menu {
     private BikesDao bikesDao = new BikesDao();
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {
+        bikesDao.loadData();
         boolean runMenu = true;
         do {
             showTitle();
@@ -21,17 +20,17 @@ public class Menu {
                     break;
                 case "n":
                     addNewBike();
-                    bikesDao.saveAll();
+                    bikesDao.saveData();
                     break;
                 case "c":
                     showAllBikes();
                     changeValue(bikesDao.findOne(choiceBike()));
-                    bikesDao.saveAll();
+                    bikesDao.saveData();
                     break;
                 case "d":
                     showAllBikes();
                     bikesDao.delete(choiceBike());
-                    bikesDao.saveAll();
+                    bikesDao.saveData();
                     break;
                 case "e":
                     runMenu = false;

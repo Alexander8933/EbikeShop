@@ -4,23 +4,13 @@ import com.home.eshop.model.Bike;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BikesDao {
-    public BikesDao() {
-        this.bikes = new ArrayList<Bike>();
-        this.file = new File("BikeBase.txt");
-        loadData(bikes);
-    }
+    private ArrayList<Bike> bikes = new ArrayList<Bike>();
+    private File file = new File("BikeBase.txt");
 
-    public BikesDao(ArrayList<Bike> bikes, File file) {
-        this.bikes = bikes;
-        this.file = file;
-    }
-
-    private ArrayList<Bike> bikes;
-    private File file;
-
-    public void loadData(ArrayList<Bike> bikes) {
+    public void loadData() {
         if (bikes.isEmpty()) {
             try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
                 String line = null;
@@ -46,7 +36,7 @@ public class BikesDao {
         bikes.add(nextBike);
     }
 
-    public void saveAll() {
+    public void saveData() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             for (Bike bike : bikes) {
                 bufferedWriter.write(bike.getValueBikeInSaveTxt());
@@ -64,7 +54,10 @@ public class BikesDao {
         } else {
             System.out.println("id not found");
         }
+    }
 
+    public void deleteTest(Bike bike) {
+        bikes.remove(bike);
     }
 
     public int save(Bike bike) {
@@ -75,6 +68,21 @@ public class BikesDao {
 
     public Bike findOne(int id) {
         return bikes.get(id);
+    }
+
+    public Bike findOneTest(Bike bike) {
+        if (bikes.indexOf(bike) != (-1)) {
+            Bike bikeOne = bikes.get(bikes.indexOf(bike));
+            return bikeOne;
+        } else {
+            System.out.println("Bike not found");
+        }
+        return null;
+    }
+
+    public List<Bike> findAll() {
+        List<Bike> bikesList = bikes;
+        return bikesList;
     }
 
     public int bikesSize() {
