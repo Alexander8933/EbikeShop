@@ -31,28 +31,22 @@ class BikesDaoTest {
     }
 
     @Test
-    void loadData() {
-        bikesDaoTest.saveAll();
-        bikes.clear();
+    void loadAndSaveAll() {
         bikesDaoTest.loadData(bikes);
-        bikeActual = bikes.get(0);
-        assertEquals(bikeOne.getTextBikePresentation(), bikeActual.getTextBikePresentation());
-    }
-
-    @Test
-    void saveAll() {
         bikesDaoTest.saveAll();
-        bikes.clear();
-        bikesDaoTest.loadData(bikes);
-        bikeActual = bikes.get(0);
-        assertEquals(bikeOne.getTextBikePresentation(), bikeActual.getTextBikePresentation());
+        List<Bike> actualBikes = bikesDaoTest.findAll();
+       
+        assertThat(actualBikes)
+            .isNotEmpty()
+            .contains(bikeOne, bikeTwo);
     }
 
     @Test
     void delete() {
         bikesDaoTest.delete(0);
-        bikeActual = bikes.get(0);
-        assertNotEquals(bikeOne.getTextBikePresentation(), bikeActual.getTextBikePresentation());
+        bikeActual = bikesDaoTest.findOne(0);//suppose if not present - returns null
+
+        assertNull(bikeActual);
     }
 
     @Test
