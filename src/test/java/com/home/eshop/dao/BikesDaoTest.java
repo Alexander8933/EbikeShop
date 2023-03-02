@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BikesDaoTest {
-    BikesDao bikesDaoTest = new BikesDao();
+    BikesDao bikesDaoTest = new BikesDao("BikeBase.txt");
 
     Bike bikeOne = new Bike("testOne", 1, 1);
     Bike bikeTwo = new Bike("testTwo", 2, 2);

@@ -4,6 +4,7 @@ public class Bike {
     private String title;
     private int price;
     private int number;
+    private int id;
 
     public Bike(String title, int price, int number) {
         this.title = title;
@@ -12,7 +13,7 @@ public class Bike {
     }
 
     public String getTextBikePresentation() {
-        return "Title : " + title + " Price : " + price + " Number : " + number;
+        return "Title : " + title + " Price : " + price + " Number : " + number + "Id : " + id;
     }
 
     public String getValueBikeInSaveTxt() {
@@ -37,6 +38,12 @@ public class Bike {
         }
     }
 
+    public void setId(int id) {
+        if (id >= 0) {
+            this.id = id;
+        }
+    }
+
     public String getTitle() {
         return title;
     }
@@ -47,6 +54,10 @@ public class Bike {
 
     public int getPrice() {
         return price;
+    }
+
+    public int getId() {
+        return id;
     }
 
 

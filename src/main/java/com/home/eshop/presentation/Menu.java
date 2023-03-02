@@ -5,7 +5,7 @@ import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
 public class Menu {
-    private BikesDao bikesDao = new BikesDao();
+    private BikesDao bikesDao = new BikesDao("BikeBase.txt");
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {

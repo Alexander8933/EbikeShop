@@ -7,8 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BikesDao {
+
+    public BikesDao(String path) {
+        this.file = new File(path);
+    }
+
     private ArrayList<Bike> bikes = new ArrayList<Bike>();
-    private File file = new File("BikeBase.txt");
+    private File file;
+    private int idBike = 0;
+    private Bike addId(Bike bike){
+        bike.setId(idBike);
+        idBike++;
+        return bike;
+    }
 
     public void loadData() {
         if (bikes.isEmpty()) {
@@ -33,7 +44,7 @@ public class BikesDao {
         int price = Integer.parseInt(tokens[1]);
         int number = Integer.parseInt(tokens[2]);
         Bike nextBike = new Bike(title, price, number);
-        bikes.add(nextBike);
+        bikes.add(addId(nextBike));
     }
 
     public void saveData() {
@@ -61,9 +72,8 @@ public class BikesDao {
     }
 
     public int save(Bike bike) {
-        int id = bikes.size();
-        bikes.add(id, bike);
-        return id;
+       bikes.add(addId(bike));
+        return bike.getId();
     }
 
     public Bike findOne(int id) {
