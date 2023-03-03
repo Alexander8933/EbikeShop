@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BikesDao {
+    private ArrayList<Bike> bikes = new ArrayList<Bike>();
+    private File file;
+    static int maxIdBike = 0;
 
     public BikesDao(String path) {
         this.file = new File(path);
     }
-
-    private ArrayList<Bike> bikes = new ArrayList<Bike>();
-    private File file;
-    static int maxIdBike = 0;
 
     private Bike addId(Bike bike) {
         int id = bike.getId();
