@@ -15,6 +15,7 @@ public class BikesDao {
         this.file = new File(path);
     }
 
+
     private Bike addId(Bike bike) {
         int id = bike.getId();
         if (maxIdBike < id) {
