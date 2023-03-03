@@ -10,14 +10,22 @@ public class Bike {
         this.title = title;
         this.price = price;
         this.number = number;
+        this.id=0;
+    }
+
+    public Bike(String title, int price, int number, int id) {
+        this.title = title;
+        this.price = price;
+        this.number = number;
+        this.id = id;
     }
 
     public String getTextBikePresentation() {
-        return "Title : " + title + " Price : " + price + " Number : " + number + "Id : " + id;
+        return "Title : " + title + " Price : " + price + " Number : " + number + " Id : " + id;
     }
 
     public String getValueBikeInSaveTxt() {
-        return title + "#" + price + "#" + number + "#";
+        return title + "#" + price + "#" + number + "#" + id + "#";
     }
 
     public void setTitle(String title) {

@@ -11,10 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BikesDaoTest {
-    BikesDao bikesDaoTest = new BikesDao("BikeBase.txt");
+    String path = getClass().getClassLoader().getResource("BikeBaseTestOne.txt").getPath();
 
-    Bike bikeOne = new Bike("testOne", 1, 1);
-    Bike bikeTwo = new Bike("testTwo", 2, 2);
+    BikesDao bikesDaoTest = new BikesDao(path);
+
+    Bike bikeOne = new Bike("testOne", 1, 1, 1);
+    Bike bikeTwo = new Bike("testTwo", 2, 2, 2);
+
     Bike bikeActual;
 
     @BeforeEach
@@ -24,8 +27,8 @@ class BikesDaoTest {
 
     @AfterEach
     void complete() {
-        bikesDaoTest.deleteTest(bikeOne);
-        bikesDaoTest.deleteTest(bikeTwo);
+        bikesDaoTest.delete(bikeOne.getId());
+        bikesDaoTest.delete(bikeTwo.getId());
     }
 
     @Test
@@ -41,21 +44,21 @@ class BikesDaoTest {
 
     @Test
     void delete() {
-        bikesDaoTest.deleteTest(bikeOne);
-        bikeActual = bikesDaoTest.findOneTest(bikeOne);
+        bikesDaoTest.delete(bikeOne.getId());
+        bikeActual = bikesDaoTest.findOne(bikeOne.getId());
         assertNull(bikeActual);
     }
 
     @Test
     void save() {
         bikesDaoTest.save(bikeTwo);
-        bikeActual = bikesDaoTest.findOneTest(bikeTwo);
+        bikeActual = bikesDaoTest.findOne(bikeTwo.getId());
         assertEquals(bikeTwo, bikeActual);
     }
 
     @Test
     void findOne() {
-        assertEquals(bikesDaoTest.findOneTest(bikeOne), bikeOne);
+        assertEquals(bikesDaoTest.findOne(bikeOne.getId()), bikeOne);
     }
 
     @Test
@@ -67,5 +70,4 @@ class BikesDaoTest {
                 .isNotEmpty()
                 .contains(bikeOne, bikeTwo);
     }
-
 }

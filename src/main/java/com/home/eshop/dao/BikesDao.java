@@ -14,10 +14,17 @@ public class BikesDao {
 
     private ArrayList<Bike> bikes = new ArrayList<Bike>();
     private File file;
-    private int idBike = 0;
-    private Bike addId(Bike bike){
-        bike.setId(idBike);
-        idBike++;
+    static int maxIdBike = 0;
+
+    private Bike addId(Bike bike) {
+        int id = bike.getId();
+        if (maxIdBike < id) {
+            maxIdBike = id;
+        }
+        if (id == 0) {
+            maxIdBike++;
+            bike.setId(maxIdBike);
+        }
         return bike;
     }
 
@@ -43,7 +50,8 @@ public class BikesDao {
         String title = tokens[0];
         int price = Integer.parseInt(tokens[1]);
         int number = Integer.parseInt(tokens[2]);
-        Bike nextBike = new Bike(title, price, number);
+        int id = Integer.parseInt(tokens[3]);
+        Bike nextBike = new Bike(title, price, number, id);
         bikes.add(addId(nextBike));
     }
 
@@ -60,32 +68,32 @@ public class BikesDao {
     }
 
     public void delete(int id) {
-        if (id < bikes.size()) {
-            bikes.remove(id);
+        if (id <= maxIdBike) {
+            for (Bike bike : bikes) {
+                if (bike.getId() == id) {
+                    bikes.remove(bikes.indexOf(bike));
+                    break;
+                }
+            }
         } else {
             System.out.println("id not found");
         }
     }
 
-    public void deleteTest(Bike bike) {
-        bikes.remove(bike);
-    }
-
     public int save(Bike bike) {
-       bikes.add(addId(bike));
+        bikes.add(addId(bike));
         return bike.getId();
     }
 
     public Bike findOne(int id) {
-        return bikes.get(id);
-    }
-
-    public Bike findOneTest(Bike bike) {
-        if (bikes.indexOf(bike) != (-1)) {
-            Bike bikeOne = bikes.get(bikes.indexOf(bike));
-            return bikeOne;
+        if (id <= maxIdBike) {
+            for (Bike bike : bikes) {
+                if (bike.getId() == id) {
+                    return bikes.get(bikes.indexOf(bike));
+                }
+            }
         } else {
-            System.out.println("Bike not found");
+            System.out.println("id not found");
         }
         return null;
     }
@@ -93,9 +101,5 @@ public class BikesDao {
     public List<Bike> findAll() {
         List<Bike> bikesList = bikes;
         return bikesList;
-    }
-
-    public int bikesSize() {
-        return bikes.size();
     }
 }

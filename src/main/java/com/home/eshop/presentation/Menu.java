@@ -4,6 +4,8 @@ import com.home.eshop.dao.BikesDao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
+import java.util.List;
+
 public class Menu {
     private BikesDao bikesDao = new BikesDao("BikeBase.txt");
     private InputTxt inputTxt = new InputTxt();
@@ -48,10 +50,9 @@ public class Menu {
     }
 
     private void showAllBikes() {
-        int end = bikesDao.bikesSize();
-        for (int start = 0; start < end; start++) {
-            Bike bike = bikesDao.findOne(start);
-            System.out.println("Id " + start + "\n" + bike.getTextBikePresentation());
+        List<Bike> bikesList = bikesDao.findAll();
+        for (Bike bike : bikesList) {
+            System.out.println(bike.getTextBikePresentation());
         }
     }
 

@@ -6,18 +6,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BikeTest {
 
-    private Bike bikeTest = new Bike("test", 1, 1);
+    private Bike bikeTest = new Bike("test", 1, 1, 0);
 
     @Test
     void getTextBikePresentation() {
-        String exp = "Title : " + "test" + " Price : " + "1" + " Number : " + "1";
+        String exp = "Title : " + "test" + " Price : " + "1" + " Number : " + "1" + " Id : " + "0";
         String act = bikeTest.getTextBikePresentation();
         assertEquals(exp, act);
     }
 
     @Test
     void getValueBikeInSaveTxt() {
-        String exp = "test" + "#" + "1" + "#" + "1" + "#";
+        String exp = "test" + "#" + "1" + "#" + "1" + "#" + "0" + "#";
         String act = bikeTest.getValueBikeInSaveTxt();
         assertEquals(exp, act);
     }
@@ -39,6 +39,11 @@ class BikeTest {
         int numberSetAct = bikeTest.getNumber();
         assertEquals(numberSetExp, numberSetAct);
 
+        int idSetExp = 11;
+        bikeTest.setId(numberSetExp);
+        int idSetAct = bikeTest.getId();
+        assertEquals(idSetExp, idSetAct);
+
     }
 
     @Test
@@ -54,5 +59,9 @@ class BikeTest {
         int priceGetExp = 1;
         int priceGetAct = bikeTest.getPrice();
         assertEquals(priceGetExp, priceGetAct);
+
+        int idGetExp = 0;
+        int idGetAct = bikeTest.getId();
+        assertEquals(idGetExp, idGetAct);
     }
 }
