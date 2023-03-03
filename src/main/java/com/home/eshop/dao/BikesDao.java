@@ -25,6 +25,7 @@ public class BikesDao {
         }
         return bike;
     }
+    //test
 
     public void loadData() {
         if (bikes.isEmpty()) {
