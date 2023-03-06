@@ -11,7 +11,6 @@ public class Menu {
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {
-        bikesDao.loadData();
         boolean runMenu = true;
         do {
             showTitle();
@@ -22,17 +21,14 @@ public class Menu {
                     break;
                 case "n":
                     addNewBike();
-                    bikesDao.saveData();
                     break;
                 case "c":
                     showAllBikes();
-                    changeValue(bikesDao.findOne(choiceBike()));
-                    bikesDao.saveData();
+                    bikesDao.change(changeValue(bikesDao.findOne(choiceBike())));
                     break;
                 case "d":
                     showAllBikes();
                     bikesDao.delete(choiceBike());
-                    bikesDao.saveData();
                     break;
                 case "e":
                     runMenu = false;
@@ -61,7 +57,7 @@ public class Menu {
         bikesDao.save(bike);
     }
 
-    private void changeValue(Bike bike) {
+    private Bike changeValue(Bike bike) {
         System.out.println("Change : Title Enter t , Price Enter p , Number Enter n");
         String choice = inputTxt.get();
         switch (choice) {
@@ -78,6 +74,7 @@ public class Menu {
                 bike.setNumber(Integer.parseInt(inputTxt.get()));
                 break;
         }
+        return bike;
     }
 
     private int choiceBike() {

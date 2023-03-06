@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BikesDao {
-    private ArrayList<Bike> bikes = new ArrayList<Bike>();
     private File file;
     static int maxIdBike = 0;
 
     public BikesDao(String path) {
         this.file = new File(path);
     }
+
     private Bike addId(Bike bike) {
         int id = bike.getId();
         if (maxIdBike < id) {
@@ -25,80 +25,104 @@ public class BikesDao {
         }
         return bike;
     }
-    //test
 
-    public void loadData() {
-        if (bikes.isEmpty()) {
-            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-                String line = null;
-                while ((line = bufferedReader.readLine()) != null) {
-                    addBike(line);
+    public int change(Bike bike) {
+        File temp = new File(file.getParent(), "temp");
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
+            while (bufferedReader.ready()) {
+                String bikeString = bufferedReader.readLine();
+                String[] tokens = bikeString.split("#");
+                if (Integer.parseInt(tokens[3]) != bike.getId()) {
+                    printWriter.println(bikeString);
                 }
-            } catch (FileNotFoundException e) {
-                System.out.println("File BikeBase.txt Not Found ");
-                e.printStackTrace();
-            } catch (IOException ex) {
-                System.out.println("File BikeBase.txt May be damaged");
-                ex.printStackTrace();
+                if (Integer.parseInt(tokens[3]) == bike.getId()) {
+                    printWriter.println(bike.getValueBikeInSaveTxt());
+                }
             }
-        }
-    }
+            printWriter.flush();
+            printWriter.close();
+            bufferedReader.close();
+            file.delete();
+            temp.renameTo(file);
 
-    private void addBike(String bikeString) {
-        String[] tokens = bikeString.split("#");
-        String title = tokens[0];
-        int price = Integer.parseInt(tokens[1]);
-        int number = Integer.parseInt(tokens[2]);
-        int id = Integer.parseInt(tokens[3]);
-        Bike nextBike = new Bike(title, price, number, id);
-        bikes.add(addId(nextBike));
-    }
-
-    public void saveData() {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
-            for (Bike bike : bikes) {
-                bufferedWriter.write(bike.getValueBikeInSaveTxt());
-                bufferedWriter.newLine();
-            }
-        } catch (IOException ex) {
-            System.out.println("File BikeBase.txt May be damaged");
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return bike.getId();
     }
 
     public void delete(int id) {
-        if (id <= maxIdBike) {
-            for (Bike bike : bikes) {
-                if (bike.getId() == id) {
-                    bikes.remove(bikes.indexOf(bike));
-                    break;
+        File temp = new File(file.getParent(), "temp.txt");
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
+            while (bufferedReader.ready()) {
+                String bikeString = bufferedReader.readLine();
+                String[] tokens = bikeString.split("#");
+                if (Integer.parseInt(tokens[3]) != id) {
+                    printWriter.println(bikeString);
                 }
             }
-        } else {
-            System.out.println("id not found");
+            printWriter.flush();
+            printWriter.close();
+            bufferedReader.close();
+            file.delete();
+            temp.renameTo(file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public int save(Bike bike) {
-        bikes.add(addId(bike));
+        try (PrintWriter printWriter = new PrintWriter(new FileWriter(file, true))) {
+            printWriter.println(addId(bike).getValueBikeInSaveTxt());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return bike.getId();
     }
 
     public Bike findOne(int id) {
-        if (id <= maxIdBike) {
-            for (Bike bike : bikes) {
-                if (bike.getId() == id) {
-                    return bikes.get(bikes.indexOf(bike));
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            while (bufferedReader.ready()) {
+                String bikeString = (bufferedReader.readLine());
+                String[] tokens = bikeString.split("#");
+                if (Integer.parseInt(tokens[3]) == id) {
+                    return addBike(bikeString);
                 }
             }
-        } else {
-            System.out.println("id not found");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
         return null;
     }
 
     public List<Bike> findAll() {
-        List<Bike> bikesList = bikes;
-        return bikesList;
+        List<Bike> bikes = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            while (bufferedReader.ready()) {
+                bikes.add(addBike(bufferedReader.readLine()));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return bikes;
+    }
+
+    private Bike addBike(String bikeString) {
+        String[] tokens = bikeString.split("#");
+        String title = tokens[0];
+        int price = Integer.parseInt(tokens[1]);
+        int number = Integer.parseInt(tokens[2]);
+        int id = Integer.parseInt(tokens[3]);
+        Bike bike = new Bike(title, price, number, id);
+        return addId(bike);
     }
 }
