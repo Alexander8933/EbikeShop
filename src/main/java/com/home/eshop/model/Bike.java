@@ -10,7 +10,7 @@ public class Bike {
         this.title = title;
         this.price = price;
         this.number = number;
-        this.id=0;
+        this.id = 0;
     }
 
     public Bike(String title, int price, int number, int id) {
@@ -69,4 +69,25 @@ public class Bike {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bike bike = (Bike) o;
+
+        if (price != bike.price) return false;
+        if (number != bike.number) return false;
+        if (id != bike.id) return false;
+        return title.equals(bike.title);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title.hashCode();
+        result = 31 * result + price;
+        result = 31 * result + number;
+        result = 31 * result + id;
+        return result;
+    }
 }

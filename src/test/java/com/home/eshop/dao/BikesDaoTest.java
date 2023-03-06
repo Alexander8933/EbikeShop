@@ -17,6 +17,7 @@ class BikesDaoTest {
 
     Bike bikeOne = new Bike("testOne", 1, 1, 1);
     Bike bikeTwo = new Bike("testTwo", 2, 2, 2);
+    Bike bikeOneChange = new Bike("testOneChange", 3, 3, 1);
 
     Bike bikeActual;
 
@@ -32,14 +33,10 @@ class BikesDaoTest {
     }
 
     @Test
-    void loadAndSaveData() {
-        bikesDaoTest.saveData();
-        bikesDaoTest.loadData();
-        List<Bike> actualBikes = bikesDaoTest.findAll();
-
-        assertThat(actualBikes)
-                .isNotEmpty()
-                .contains(bikeOne);
+    void change() {
+        bikesDaoTest.change(bikeOneChange);
+        bikeActual = bikesDaoTest.findOne(bikeOneChange.getId());
+        assertEquals(bikeOneChange, bikeActual);
     }
 
     @Test
@@ -58,7 +55,8 @@ class BikesDaoTest {
 
     @Test
     void findOne() {
-        assertEquals(bikesDaoTest.findOne(bikeOne.getId()), bikeOne);
+        bikeActual = bikesDaoTest.findOne(bikeOne.getId());
+        assertEquals(bikeOne, bikeActual);
     }
 
     @Test
