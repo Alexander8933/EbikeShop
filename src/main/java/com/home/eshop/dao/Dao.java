@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface Dao {
 
-    public int change(Bike bike);
+    public int updata(Bike bike);
 
     public void delete(int id);
 

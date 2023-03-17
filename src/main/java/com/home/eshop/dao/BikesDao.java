@@ -26,7 +26,7 @@ public class BikesDao implements Dao {
         return bike;
     }
 
-    public int change(Bike bike) {
+    public int updata(Bike bike) {
         File temp = new File(file.getParent(), "temp");
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));

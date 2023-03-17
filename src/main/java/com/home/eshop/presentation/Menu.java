@@ -26,7 +26,7 @@ public class Menu {
                     break;
                 case "c":
                     showAllBikes();
-                    bikesDao.change(changeValue(bikesDao.findOne(choiceBike())));
+                    bikesDao.updata(changeValue(bikesDao.findOne(choiceBike())));
                     break;
                 case "d":
                     showAllBikes();
