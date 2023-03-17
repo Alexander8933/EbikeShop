@@ -4,7 +4,7 @@ import com.home.eshop.model.Bike;
 
 import java.util.List;
 
-public interface DaoInterface {
+public interface Dao {
 
     public int change(Bike bike);
 

@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BikesDao implements DaoInterface {
+public class BikesDao implements Dao {
     private File file;
     static int maxIdBike = 0;
 

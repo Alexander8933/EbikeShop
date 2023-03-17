@@ -2,14 +2,14 @@ package com.home.eshop.presentation;
 
 import com.home.eshop.dao.BikesDao;
 import com.home.eshop.dao.DaoCache;
-import com.home.eshop.dao.DaoInterface;
+import com.home.eshop.dao.Dao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
 import java.util.List;
 
 public class Menu {
-    public DaoInterface bikesDao = new DaoCache("BikeBase.txt");
+    public Dao bikesDao = new DaoCache("BikeBase.txt");
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {

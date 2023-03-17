@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class DaoCache implements DaoInterface {
+public class DaoCache implements Dao {
     private Map<Integer, Bike> mapBikes;
     private BikesDao bikesDao;
 
