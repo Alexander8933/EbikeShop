@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BikesDao {
+public class BikesDao implements DaoInterface {
     private File file;
     static int maxIdBike = 0;
 
@@ -14,7 +14,7 @@ public class BikesDao {
         this.file = new File(path);
     }
 
-    private Bike addId(Bike bike) {
+    Bike addId(Bike bike) {
         int id = bike.getId();
         if (maxIdBike < id) {
             maxIdBike = id;
