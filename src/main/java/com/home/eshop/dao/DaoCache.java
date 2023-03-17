@@ -53,7 +53,7 @@ public class DaoCache implements Dao {
 
     @Override
     public int save(Bike bike) {
-        Optional<Bike> optionalBike = Optional.of(bikesDao.addId(bike));
+        Optional<Bike> optionalBike = Optional.of(bikesDao.idProcessing(bike));
         optionalBike.ifPresent(bikeSave -> {
             mapBikes.put(bikeSave.getId(), bikeSave);
             bikesDao.save(bikeSave);

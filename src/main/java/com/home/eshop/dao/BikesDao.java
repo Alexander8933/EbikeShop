@@ -14,7 +14,7 @@ public class BikesDao implements Dao {
         this.file = new File(path);
     }
 
-    Bike addId(Bike bike) {
+    Bike idProcessing(Bike bike) {
         int id = bike.getId();
         if (maxIdBike < id) {
             maxIdBike = id;
@@ -78,7 +78,7 @@ public class BikesDao implements Dao {
 
     public int save(Bike bike) {
         try (PrintWriter printWriter = new PrintWriter(new FileWriter(file, true))) {
-            printWriter.println(addId(bike).getValueBikeInSaveTxt());
+            printWriter.println(idProcessing(bike).getValueBikeInSaveTxt());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -123,6 +123,6 @@ public class BikesDao implements Dao {
         int number = Integer.parseInt(tokens[2]);
         int id = Integer.parseInt(tokens[3]);
         Bike bike = new Bike(title, price, number, id);
-        return addId(bike);
+        return idProcessing(bike);
     }
 }
