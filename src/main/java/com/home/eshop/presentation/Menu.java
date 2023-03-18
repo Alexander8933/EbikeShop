@@ -1,7 +1,7 @@
 package com.home.eshop.presentation;
 
+import com.home.eshop.dao.BikesCache;
 import com.home.eshop.dao.BikesDao;
-import com.home.eshop.dao.DaoCache;
 import com.home.eshop.dao.Dao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
@@ -9,7 +9,7 @@ import com.home.eshop.utils.InputTxt;
 import java.util.List;
 
 public class Menu {
-    public Dao bikesDao = new DaoCache("BikeBase.txt");
+    public Dao bikesDao = new BikesCache("BikeBase.txt");
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {

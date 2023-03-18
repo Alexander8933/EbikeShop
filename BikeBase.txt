@@ -1,6 +1,5 @@
-Ardis#12#0#1#
+Ardis#12#10#1#
 newBike#321#21#7#
-newBike#0#34#8#
 newBike#0#43#12#
 newBike#0#2121#14#
 newBike#0#33#16#

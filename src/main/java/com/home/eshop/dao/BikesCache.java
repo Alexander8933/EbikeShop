@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class DaoCache implements Dao {
+public class BikesCache implements Dao {
     private Map<Integer, Bike> mapBikes;
     private BikesDao bikesDao;
 
-    public DaoCache(String path) {
+    public BikesCache(String path) {
         addBikesMap(path);
     }
 
@@ -37,7 +37,7 @@ public class DaoCache implements Dao {
             mapBikes.put(bikeChang.getId(), bikeChang);
         });
         optionalBike.orElse(bikesDao.findOne(bike.getId()));
-        optionalBike.ifPresentOrElse(bikeChang -> bikesDao.update(bikeChang), DaoCache::bikeNotFound);
+        optionalBike.ifPresentOrElse(bikeChang -> bikesDao.update(bikeChang), BikesCache::bikeNotFound);
         return bike.getId();
     }
 
@@ -48,7 +48,7 @@ public class DaoCache implements Dao {
             mapBikes.remove(bike.getId());
         });
         optionalBike.orElse(bikesDao.findOne(id));
-        optionalBike.ifPresentOrElse(bike -> bikesDao.delete(bike.getId()), DaoCache::bikeNotFound);
+        optionalBike.ifPresentOrElse(bike -> bikesDao.delete(bike.getId()), BikesCache::bikeNotFound);
     }
 
     @Override
