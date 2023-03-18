@@ -1,12 +1,12 @@
 package com.home.eshop.presentation;
 
 import com.home.eshop.dao.BikesCache;
-import com.home.eshop.dao.BikesDao;
 import com.home.eshop.dao.Dao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Menu {
     public Dao bikesDao = new BikesCache("BikeBase.txt");
@@ -48,15 +48,14 @@ public class Menu {
     }
 
     private void showAllBikes() {
-        List<Bike> bikesList = bikesDao.findAll();
-        for (Bike bike : bikesList) {
-            System.out.println(bike.getTextBikePresentation());
-        }
+        bikesDao.findAll()
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(bike -> System.out.println(bike.getTextBikePresentation()));
     }
 
     private void addNewBike() {
-        Bike bike = new Bike("newBike", 0, 0);
-        bikesDao.save(bike);
+        bikesDao.save(new Bike("newBike", 0, 0));
     }
 
     private Bike changeValue(Bike bike) {
