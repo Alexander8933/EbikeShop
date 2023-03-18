@@ -37,9 +37,7 @@ public class BikesCache implements Dao {
     @Override
     public void delete(int id) {
         Optional<Bike> optionalBike = Optional.ofNullable(mapBikes.get(id));
-        optionalBike.ifPresent(bike -> {
-            mapBikes.remove(bike.getId());
-        });
+        optionalBike.ifPresent(bike -> mapBikes.remove(bike.getId()));
         optionalBike.orElse(bikesDao.findOne(id));
         optionalBike.ifPresent(bike -> bikesDao.delete(bike.getId()));
     }
