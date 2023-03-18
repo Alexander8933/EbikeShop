@@ -28,9 +28,7 @@ public class BikesCache implements Dao {
     @Override
     public int update(Bike bike) {
         Optional<Bike> optionalBike = Optional.ofNullable(mapBikes.get(bike.getId()));
-        optionalBike.ifPresent(bikeChang -> {
-            mapBikes.put(bikeChang.getId(), bike);
-        });
+        optionalBike.ifPresent(bikeChang -> mapBikes.put(bikeChang.getId(), bike));
         optionalBike.orElse(bikesDao.findOne(bike.getId()));
         optionalBike.ifPresent(bikeChang -> bikesDao.update(bike));
         return bike.getId();
