@@ -5,6 +5,9 @@ import com.home.eshop.model.Bike;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BikesDao implements Dao {
     private File file;
@@ -26,7 +29,7 @@ public class BikesDao implements Dao {
         return bike;
     }
 
-    public int updata(Bike bike) {
+    public int update(Bike bike) {
         File temp = new File(file.getParent(), "temp");
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -86,28 +89,35 @@ public class BikesDao implements Dao {
     }
 
     public Bike findOne(int id) {
+        Optional<Bike> optionalBike = Optional.empty();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            while (bufferedReader.ready()) {
-                String bikeString = (bufferedReader.readLine());
-                String[] tokens = bikeString.split("#");
-                if (Integer.parseInt(tokens[3]) == id) {
-                    return addBike(bikeString);
-                }
-            }
+            optionalBike = bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .filter(bikeString -> {
+                        String[] tokens = bikeString.split("#");
+                        return id == Integer.parseInt(tokens[3]);
+                    })
+                    .map(this::addBike)
+                    .findFirst();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return optionalBike.orElse(null);
     }
 
     public List<Bike> findAll() {
         List<Bike> bikes = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            while (bufferedReader.ready()) {
-                bikes.add(addBike(bufferedReader.readLine()));
-            }
+            bikes = bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .map(this::addBike)
+                    .collect(Collectors.toList());
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException ex) {

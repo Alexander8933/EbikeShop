@@ -30,14 +30,14 @@ public class DaoCache implements Dao {
     }
 
     @Override
-    public int updata(Bike bike) {
+    public int update(Bike bike) {
         Optional<Bike> optionalBike = Optional.ofNullable(mapBikes.get(bike.getId()));
         optionalBike.ifPresent(bikeChang -> {
             mapBikes.remove(bikeChang.getId());
             mapBikes.put(bikeChang.getId(), bikeChang);
         });
         optionalBike.orElse(bikesDao.findOne(bike.getId()));
-        optionalBike.ifPresentOrElse(bikeChang -> bikesDao.updata(bikeChang), DaoCache::bikeNotFound);
+        optionalBike.ifPresentOrElse(bikeChang -> bikesDao.update(bikeChang), DaoCache::bikeNotFound);
         return bike.getId();
     }
 

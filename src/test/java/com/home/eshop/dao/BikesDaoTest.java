@@ -33,8 +33,8 @@ class BikesDaoTest {
     }
 
     @Test
-    void updata() {
-        bikesDaoTest.updata(bikeOneChange);
+    void update() {
+        bikesDaoTest.update(bikeOneChange);
         bikeActual = bikesDaoTest.findOne(bikeOneChange.getId());
         assertEquals(bikeOneChange, bikeActual);
     }
