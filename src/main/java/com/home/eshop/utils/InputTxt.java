@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class InputTxt {
+
     public String get() {
         String line = null;
         try {

@@ -1,1 +1,12 @@
-EbikeShop.iml
+*.iml
+*.ipr
+*.iws
+*.uml
+/.idea/
+**/.idea/*
+!/.idea/icon.png
+!/.idea/vcs.xml
+/out/
+/*/out/
+/target/
+/*/target/
