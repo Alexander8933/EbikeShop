@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public class BikesDao implements Dao {
     private File file;
     static int maxIdBike = 0;
@@ -34,16 +36,17 @@ public class BikesDao implements Dao {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
-            while (bufferedReader.ready()) {
-                String bikeString = bufferedReader.readLine();
-                String[] tokens = bikeString.split("#");
-                if (Integer.parseInt(tokens[3]) != bike.getId()) {
-                    printWriter.println(bikeString);
-                }
-                if (Integer.parseInt(tokens[3]) == bike.getId()) {
-                    printWriter.println(bike.getValueBikeInSaveTxt());
-                }
-            }
+            bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .peek(bikeString -> {
+                        if (getIdToBikeString(bikeString) != bike.getId()) {
+                            printWriter.println(bikeString);
+                        }
+                    })
+                    .filter(bikeString -> getIdToBikeString(bikeString) == bike.getId())
+                    .forEach(bikeString -> printWriter.println(bike.getValueBikeInSaveTxt()));
+
             printWriter.flush();
             printWriter.close();
             bufferedReader.close();
@@ -61,13 +64,12 @@ public class BikesDao implements Dao {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
-            while (bufferedReader.ready()) {
-                String bikeString = bufferedReader.readLine();
-                String[] tokens = bikeString.split("#");
-                if (Integer.parseInt(tokens[3]) != id) {
-                    printWriter.println(bikeString);
-                }
-            }
+            bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .filter(bikeString -> getIdToBikeString(bikeString) != id)
+                    .forEach(printWriter::println);
+
             printWriter.flush();
             printWriter.close();
             bufferedReader.close();
@@ -94,10 +96,7 @@ public class BikesDao implements Dao {
             optionalBike = bufferedReader
                     .lines()
                     .filter(Objects::nonNull)
-                    .filter(bikeString -> {
-                        String[] tokens = bikeString.split("#");
-                        return id == Integer.parseInt(tokens[3]);
-                    })
+                    .filter(bikeString -> getIdToBikeString(bikeString) == id)
                     .map(this::addBike)
                     .findFirst();
 
@@ -116,7 +115,7 @@ public class BikesDao implements Dao {
                     .lines()
                     .filter(Objects::nonNull)
                     .map(this::addBike)
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -134,5 +133,10 @@ public class BikesDao implements Dao {
         int id = Integer.parseInt(tokens[3]);
         Bike bike = new Bike(title, price, number, id);
         return idProcessing(bike);
+    }
+
+    private int getIdToBikeString(String bikeString) {
+        String[] tokens = bikeString.split("#");
+        return Integer.parseInt(tokens[3]);
     }
 }
