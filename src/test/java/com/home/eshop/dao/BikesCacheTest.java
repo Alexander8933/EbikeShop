@@ -10,10 +10,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class BikesDaoTest {
+class BikesCacheTest {
     String path = getClass().getClassLoader().getResource("BikeBaseTestOne.txt").getPath();
 
-    BikesDao bikesDaoTest = new BikesDao(path);
+    Dao bikesCache = new BikesCache(path);
 
     Bike bikeOne = new Bike("testOne", 1, 1, 1);
     Bike bikeTwo = new Bike("testTwo", 2, 2, 2);
@@ -23,46 +23,46 @@ class BikesDaoTest {
 
     @BeforeEach
     void prepare() {
-        bikesDaoTest.save(bikeOne);
+        bikesCache.save(bikeOne);
     }
 
     @AfterEach
     void complete() {
-        bikesDaoTest.delete(bikeOne.getId());
-        bikesDaoTest.delete(bikeTwo.getId());
+        bikesCache.delete(bikeOne.getId());
+        bikesCache.delete(bikeTwo.getId());
     }
 
     @Test
     void update() {
-        bikesDaoTest.update(bikeOneChange);
-        bikeActual = bikesDaoTest.findOne(bikeOneChange.getId());
+        bikesCache.update(bikeOneChange);
+        bikeActual = bikesCache.findOne(bikeOneChange.getId());
         assertEquals(bikeOneChange, bikeActual);
     }
 
     @Test
     void delete() {
-        bikesDaoTest.delete(bikeOne.getId());
-        bikeActual = bikesDaoTest.findOne(bikeOne.getId());
+        bikesCache.delete(bikeOne.getId());
+        bikeActual = bikesCache.findOne(bikeOne.getId());
         assertNull(bikeActual);
     }
 
     @Test
     void save() {
-        bikesDaoTest.save(bikeTwo);
-        bikeActual = bikesDaoTest.findOne(bikeTwo.getId());
+        bikesCache.save(bikeTwo);
+        bikeActual = bikesCache.findOne(bikeTwo.getId());
         assertEquals(bikeTwo, bikeActual);
     }
 
     @Test
     void findOne() {
-        bikeActual = bikesDaoTest.findOne(bikeOne.getId());
+        bikeActual = bikesCache.findOne(bikeOne.getId());
         assertEquals(bikeOne, bikeActual);
     }
 
     @Test
     void findAll() {
-        bikesDaoTest.save(bikeTwo);
-        List<Bike> actualBikes = bikesDaoTest.findAll();
+        bikesCache.save(bikeTwo);
+        List<Bike> actualBikes = bikesCache.findAll();
 
         assertThat(actualBikes)
                 .isNotEmpty()

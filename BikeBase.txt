@@ -1,8 +1,4 @@
-comanche prairie#1234#10#7#
-comanche tomahawk#1300#5#1#
-comanche ontario#1321#4#2#
-comanche ontario#1800#6#3#
-comanche ontario#1311#9#4#
-newBike#0#0#5#
-newBike#0#21#8#
-newBike#0#0#10#
+newBike#43#1111#1#
+newBike#22222#2222#2#
+newBike#333#3333#3#
+newBike#44#4444#4#

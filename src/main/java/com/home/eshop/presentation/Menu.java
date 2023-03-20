@@ -1,17 +1,19 @@
 package com.home.eshop.presentation;
 
+import com.home.eshop.dao.BikesCache;
 import com.home.eshop.dao.BikesDao;
+import com.home.eshop.dao.Dao;
 import com.home.eshop.model.Bike;
 import com.home.eshop.utils.InputTxt;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Menu {
-    private BikesDao bikesDao = new BikesDao("BikeBase.txt");
+    public Dao bikesDao = new BikesCache("BikeBase.txt");
     private InputTxt inputTxt = new InputTxt();
 
     public void show() {
-        bikesDao.loadData();
         boolean runMenu = true;
         do {
             showTitle();
@@ -22,17 +24,14 @@ public class Menu {
                     break;
                 case "n":
                     addNewBike();
-                    bikesDao.saveData();
                     break;
                 case "c":
                     showAllBikes();
-                    changeValue(bikesDao.findOne(choiceBike()));
-                    bikesDao.saveData();
+                    bikesDao.update(changeValue(bikesDao.findOne(choiceBike())));
                     break;
                 case "d":
                     showAllBikes();
                     bikesDao.delete(choiceBike());
-                    bikesDao.saveData();
                     break;
                 case "e":
                     runMenu = false;
@@ -50,18 +49,17 @@ public class Menu {
     }
 
     private void showAllBikes() {
-        List<Bike> bikesList = bikesDao.findAll();
-        for (Bike bike : bikesList) {
-            System.out.println(bike.getTextBikePresentation());
-        }
+        bikesDao.findAll()
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(bike -> System.out.println(bike.getTextBikePresentation()));
     }
 
     private void addNewBike() {
-        Bike bike = new Bike("newBike", 0, 0);
-        bikesDao.save(bike);
+        bikesDao.save(new Bike("newBike", 0, 0));
     }
 
-    private void changeValue(Bike bike) {
+    private Bike changeValue(Bike bike) {
         System.out.println("Change : Title Enter t , Price Enter p , Number Enter n");
         String choice = inputTxt.get();
         switch (choice) {
@@ -78,6 +76,7 @@ public class Menu {
                 bike.setNumber(Integer.parseInt(inputTxt.get()));
                 break;
         }
+        return bike;
     }
 
     private int choiceBike() {

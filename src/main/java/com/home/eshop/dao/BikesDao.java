@@ -5,16 +5,21 @@ import com.home.eshop.model.Bike;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class BikesDao {
-    private ArrayList<Bike> bikes = new ArrayList<Bike>();
+import static java.util.stream.Collectors.toList;
+
+public class BikesDao implements Dao {
     private File file;
     static int maxIdBike = 0;
 
     public BikesDao(String path) {
         this.file = new File(path);
     }
-    private Bike addId(Bike bike) {
+
+    Bike idProcessing(Bike bike) {
         int id = bike.getId();
         if (maxIdBike < id) {
             maxIdBike = id;
@@ -26,78 +31,112 @@ public class BikesDao {
         return bike;
     }
 
-    public void loadData() {
-        if (bikes.isEmpty()) {
-            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-                String line = null;
-                while ((line = bufferedReader.readLine()) != null) {
-                    addBike(line);
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("File BikeBase.txt Not Found ");
-                e.printStackTrace();
-            } catch (IOException ex) {
-                System.out.println("File BikeBase.txt May be damaged");
-                ex.printStackTrace();
-            }
+    public int update(Bike bike) {
+        File temp = new File(file.getParent(), "temp");
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
+            bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .peek(bikeString -> {
+                        if (getIdToBikeString(bikeString) != bike.getId()) {
+                            printWriter.println(bikeString);
+                        }
+                    })
+                    .filter(bikeString -> getIdToBikeString(bikeString) == bike.getId())
+                    .forEach(bikeString -> printWriter.println(bike.getValueBikeInSaveTxt()));
+
+            printWriter.flush();
+            printWriter.close();
+            bufferedReader.close();
+            file.delete();
+            temp.renameTo(file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bike.getId();
+    }
+
+    public void delete(int id) {
+        File temp = new File(file.getParent(), "temp.txt");
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
+            bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .filter(bikeString -> getIdToBikeString(bikeString) != id)
+                    .forEach(printWriter::println);
+
+            printWriter.flush();
+            printWriter.close();
+            bufferedReader.close();
+            file.delete();
+            temp.renameTo(file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void addBike(String bikeString) {
+    public int save(Bike bike) {
+        try (PrintWriter printWriter = new PrintWriter(new FileWriter(file, true))) {
+            printWriter.println(idProcessing(bike).getValueBikeInSaveTxt());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return bike.getId();
+    }
+
+    public Bike findOne(int id) {
+        Optional<Bike> optionalBike = Optional.empty();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            optionalBike = bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .filter(bikeString -> getIdToBikeString(bikeString) == id)
+                    .map(this::addBike)
+                    .findFirst();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return optionalBike.orElse(null);
+    }
+
+    public List<Bike> findAll() {
+        List<Bike> bikes = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            bikes = bufferedReader
+                    .lines()
+                    .filter(Objects::nonNull)
+                    .map(this::addBike)
+                    .collect(toList());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return bikes;
+    }
+
+    private Bike addBike(String bikeString) {
         String[] tokens = bikeString.split("#");
         String title = tokens[0];
         int price = Integer.parseInt(tokens[1]);
         int number = Integer.parseInt(tokens[2]);
         int id = Integer.parseInt(tokens[3]);
-        Bike nextBike = new Bike(title, price, number, id);
-        bikes.add(addId(nextBike));
+        Bike bike = new Bike(title, price, number, id);
+        return idProcessing(bike);
     }
 
-    public void saveData() {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
-            for (Bike bike : bikes) {
-                bufferedWriter.write(bike.getValueBikeInSaveTxt());
-                bufferedWriter.newLine();
-            }
-        } catch (IOException ex) {
-            System.out.println("File BikeBase.txt May be damaged");
-            ex.printStackTrace();
-        }
-    }
-
-    public void delete(int id) {
-        if (id <= maxIdBike) {
-            for (Bike bike : bikes) {
-                if (bike.getId() == id) {
-                    bikes.remove(bikes.indexOf(bike));
-                    break;
-                }
-            }
-        } else {
-            System.out.println("id not found");
-        }
-    }
-
-    public int save(Bike bike) {
-        bikes.add(addId(bike));
-        return bike.getId();
-    }
-
-    public Bike findOne(int id) {
-        if (id <= maxIdBike) {
-            for (Bike bike : bikes) {
-                if (bike.getId() == id) {
-                    return bikes.get(bikes.indexOf(bike));
-                }
-            }
-        } else {
-            System.out.println("id not found");
-        }
-        return null;
-    }
-
-    public List<Bike> findAll() {
-        List<Bike> bikesList = bikes;
-        return bikesList;
+    private int getIdToBikeString(String bikeString) {
+        String[] tokens = bikeString.split("#");
+        return Integer.parseInt(tokens[3]);
     }
 }
