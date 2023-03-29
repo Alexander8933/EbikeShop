@@ -7,11 +7,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BikesCache implements Dao {
-    private Map<Integer, Bike> mapBikes;
+    private Map<Integer, Bike> mapBikes = new HashMap<>();
     private BikesDao bikesDao;
 
     public BikesCache(String path) {
         addBikesMap(path);
+    }
+
+    public BikesCache(BikesDao bikesDao) {
+        this.bikesDao = bikesDao;
     }
 
     private void addBikesMap(String path) {

@@ -1,71 +1,96 @@
 package com.home.eshop.dao;
 
 import com.home.eshop.model.Bike;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
 
 class BikesCacheTest {
-    String path = getClass().getClassLoader().getResource("BikeBaseTestOne.txt").getPath();
 
-    Dao bikesCache = new BikesCache(path);
+    @Mock
+    private BikesDao bikesDao;
+    private final BikesCache bikesCache;
+    @Spy
+    Bike bikeOne = new Bike("One", 1, 1, 1);
+    Bike bikeUpdate = new Bike("Changed", 1, 1, 1);
+    Bike bikeTwo = new Bike("Two", 2, 2, 2);
 
-    Bike bikeOne = new Bike("testOne", 1, 1, 1);
-    Bike bikeTwo = new Bike("testTwo", 2, 2, 2);
-    Bike bikeOneChange = new Bike("testOneChange", 3, 3, 1);
-
-    Bike bikeActual;
+    public BikesCacheTest() {
+        MockitoAnnotations.initMocks(this);
+        this.bikesCache = new BikesCache(bikesDao);
+    }
 
     @BeforeEach
     void prepare() {
-        bikesCache.save(bikeOne);
-    }
+        Mockito.doReturn(null).when(bikesDao).findOne(anyInt());
 
-    @AfterEach
-    void complete() {
-        bikesCache.delete(bikeOne.getId());
-        bikesCache.delete(bikeTwo.getId());
+        Mockito.doReturn(bikeOne).when(bikesDao).idProcessing(bikeOne);
+        Mockito.doReturn(bikeOne.getId()).when(bikesDao).save(bikeOne);
+        bikesCache.save(bikeOne);
     }
 
     @Test
     void update() {
-        bikesCache.update(bikeOneChange);
-        bikeActual = bikesCache.findOne(bikeOneChange.getId());
-        assertEquals(bikeOneChange, bikeActual);
+        int id = bikeUpdate.getId();
+        Mockito.doReturn(id).when(bikesDao).update(bikeUpdate);
+
+        bikesCache.update(bikeUpdate);
+        assertEquals(bikeUpdate, bikesCache.findOne(id));
+
+        Mockito.verify(bikesDao, times(1)).update(bikeUpdate);
     }
 
     @Test
     void delete() {
-        bikesCache.delete(bikeOne.getId());
-        bikeActual = bikesCache.findOne(bikeOne.getId());
-        assertNull(bikeActual);
+        int id = bikeOne.getId();
+        Mockito.doNothing().when(bikesDao).delete(id);
+
+        assertEquals(bikeOne, bikesCache.findOne(id));
+
+        bikesCache.delete(id);
+        assertNull(bikesCache.findOne(id));
+
+        Mockito.verify(bikesDao, times(1)).delete(id);
     }
 
     @Test
     void save() {
+        int id = bikeTwo.getId();
+        Mockito.when(bikesDao.idProcessing(bikeTwo)).thenReturn(bikeTwo);
+        Mockito.doReturn(bikeTwo.getId()).when(bikesDao).save(bikeTwo);
+
         bikesCache.save(bikeTwo);
-        bikeActual = bikesCache.findOne(bikeTwo.getId());
-        assertEquals(bikeTwo, bikeActual);
+        assertEquals(bikeTwo, bikesCache.findOne(id));
+
+        Mockito.verify(bikesDao, times(1)).save(bikeTwo);
+        Mockito.verify(bikesDao, times(1)).idProcessing(bikeTwo);
     }
 
     @Test
     void findOne() {
-        bikeActual = bikesCache.findOne(bikeOne.getId());
-        assertEquals(bikeOne, bikeActual);
+        int id = bikeOne.getId();
+
+        assertEquals(bikeOne, bikesCache.findOne(id));
+
+        Mockito.verify(bikesDao, times(1)).findOne(id);
     }
 
     @Test
     void findAll() {
-        bikesCache.save(bikeTwo);
-        List<Bike> actualBikes = bikesCache.findAll();
+        List<Bike> bikes = bikesCache.findAll();
 
-        assertThat(actualBikes)
+        assertThat(bikes)
                 .isNotEmpty()
-                .contains(bikeOne, bikeTwo);
+                .contains(bikeOne);
     }
 }
