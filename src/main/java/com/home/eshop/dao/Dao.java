@@ -2,17 +2,18 @@ package com.home.eshop.dao;
 
 import com.home.eshop.model.Bike;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface Dao {
 
-    public int update(Bike bike);
+    public int create(Bike bike) throws SQLException;
 
-    public void delete(int id);
+    public Bike read(int id) throws SQLException;
 
-    public int save(Bike bike);
+    public int update(Bike bike) throws SQLException;
 
-    public Bike findOne(int id);
+    public int delete(int id) throws SQLException;
 
-    public List<Bike> findAll();
+    public List<Bike> findAll() throws SQLException;
 }
