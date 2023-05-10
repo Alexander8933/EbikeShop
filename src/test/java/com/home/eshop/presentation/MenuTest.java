@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MenuTest {
-    private Menu menuTest;
-
-    @BeforeEach
-    void prepare() {
-        menuTest = new Menu();
-    }
-
-    @Test
-    void show() {
-    }
-}
+//class MenuTest {
+//    private Menu menuTest;
+//
+//    @BeforeEach
+//    void prepare() {
+//        menuTest = new Menu();
+//    }
+//
+//    @Test
+//    void show() {
+//    }
+//}
