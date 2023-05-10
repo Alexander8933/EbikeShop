@@ -21,7 +21,7 @@ public class DaoJDBC implements Dao {
     }
 
     @Override
-    public int create(Bike bike) throws SQLException {
+    public int create(Bike bike) {
         String sqlBrand = "INSERT INTO bikes_brand (brand) SELECT ? " +
                 "WHERE NOT EXISTS(SELECT brand FROM bikes_brand WHERE brand= ? )";
         String sqlType = "INSERT INTO bikes_type (type) SELECT ? " +
@@ -35,77 +35,66 @@ public class DaoJDBC implements Dao {
                 "(SELECT id FROM bikes_color WHERE color = ?)" +
                 ")RETURNING id ";
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet generatedKeys = null;
-        try {
-            connection = getConnectionShop();
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
-            preparedStatement = connection.prepareStatement(sqlBrand);
-            preparedStatement.setString(1, bike.getBrand());
-            preparedStatement.setString(2, bike.getBrand());
-            preparedStatement.executeUpdate();
+        try (Connection connection = getConnectionShop();
+             PreparedStatement preparedStatementSqlBrand = connection.prepareStatement(sqlBrand);
+             PreparedStatement preparedStatementSqlType = connection.prepareStatement(sqlType);
+             PreparedStatement preparedStatementSqlColor = connection.prepareStatement(sqlColor);
+             PreparedStatement preparedStatementSqlBike = connection.prepareStatement(sqlBike, Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement = connection.prepareStatement(sqlType);
-            preparedStatement.setString(1, bike.getType());
-            preparedStatement.setString(2, bike.getType());
-            preparedStatement.executeUpdate();
+            preparedStatementSqlBrand.setString(1, bike.getBrand());
+            preparedStatementSqlBrand.setString(2, bike.getBrand());
+            preparedStatementSqlBrand.executeUpdate();
 
-            preparedStatement = connection.prepareStatement(sqlColor);
-            preparedStatement.setString(1, bike.getColor());
-            preparedStatement.setString(2, bike.getColor());
-            preparedStatement.executeUpdate();
 
-            preparedStatement = connection.prepareStatement(sqlBike, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, bike.getModel());
-            preparedStatement.setBigDecimal(2, bike.getPrice());
-            preparedStatement.setInt(3, bike.getQuantity());
-            preparedStatement.setFloat(4, bike.getWeight());
-            preparedStatement.setString(5, bike.getBrand());
-            preparedStatement.setString(6, bike.getType());
-            preparedStatement.setString(7, bike.getColor());
+            preparedStatementSqlType.setString(1, bike.getType());
+            preparedStatementSqlType.setString(2, bike.getType());
+            preparedStatementSqlType.executeUpdate();
+
+
+            preparedStatementSqlColor.setString(1, bike.getColor());
+            preparedStatementSqlColor.setString(2, bike.getColor());
+            preparedStatementSqlColor.executeUpdate();
+
+
+            preparedStatementSqlBike.setString(1, bike.getModel());
+            preparedStatementSqlBike.setBigDecimal(2, bike.getPrice());
+            preparedStatementSqlBike.setInt(3, bike.getQuantity());
+            preparedStatementSqlBike.setFloat(4, bike.getWeight());
+            preparedStatementSqlBike.setString(5, bike.getBrand());
+            preparedStatementSqlBike.setString(6, bike.getType());
+            preparedStatementSqlBike.setString(7, bike.getColor());
+
             int result = 0;
-            if (preparedStatement.executeUpdate() > 0) {
-                generatedKeys = preparedStatement.getGeneratedKeys();
+            if (preparedStatementSqlBike.executeUpdate() > 0) {
+                ResultSet generatedKeys = preparedStatementSqlBike.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     result = generatedKeys.getInt(1);
                 }
+                generatedKeys.close();
             }
 
-            connection.commit();
             return result;
 
         } catch (SQLException e) {
-            JdbcUtils.rollbackQuietly(connection);
-            throw e;
-        } finally {
-            JdbcUtils.closeQuietly(generatedKeys);
-            JdbcUtils.closeQuietly(preparedStatement);
-            JdbcUtils.closeQuietly(connection);
+            throw new RuntimeException("Failed to Create bike", e);
         }
     }
 
     @Override
-    public Bike read(int id) throws SQLException {
+    public Bike read(int id) {
         String sqlBike = "SELECT bikes.id,brand,model,type,price,quantity,color,weight FROM bikes " +
                 "LEFT JOIN bikes_brand ON bikes.brand_id = bikes_brand.id " +
                 "LEFT JOIN bikes_type ON bikes.type_id = bikes_type.id " +
                 "LEFT JOIN bikes_color ON bikes.color_id = bikes_color.id " +
                 "WHERE bikes.id = ?";
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnectionShop();
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        try (Connection connection = getConnectionShop();
+             PreparedStatement preparedStatementSqlBike = connection.prepareStatement(sqlBike)) {
 
-            preparedStatement = connection.prepareStatement(sqlBike);
-            preparedStatement.setInt(1, id);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatementSqlBike.setInt(1, id);
+            ResultSet resultSet = preparedStatementSqlBike.executeQuery();
+
             Bike result = null;
             if (resultSet.next()) {
                 int bikesId = resultSet.getInt("id");
@@ -119,23 +108,18 @@ public class DaoJDBC implements Dao {
 
                 result = new Bike(bikesId, brand, model, type, price, quantity, color, weight);
             }
+            resultSet.close();
 
-            connection.commit();
             return result;
 
         } catch (SQLException e) {
-            JdbcUtils.rollbackQuietly(connection);
-            throw e;
-        } finally {
-            JdbcUtils.closeQuietly(resultSet);
-            JdbcUtils.closeQuietly(preparedStatement);
-            JdbcUtils.closeQuietly(connection);
+            throw new RuntimeException("Failed to Read bike", e);
         }
     }
 
 
     @Override
-    public int update(Bike bike) throws SQLException {
+    public int update(Bike bike) {
         String sqlBrand = "INSERT INTO bikes_brand (brand) SELECT ? " +
                 "WHERE NOT EXISTS(SELECT brand FROM bikes_brand WHERE brand= ? )";
         String sqlType = "INSERT INTO bikes_type (type) SELECT ? " +
@@ -148,53 +132,43 @@ public class DaoJDBC implements Dao {
                 "color_id=(SELECT id FROM bikes_color WHERE color= ? ) " +
                 "WHERE bikes.id = ? ";
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = getConnectionShop();
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        try (Connection connection = getConnectionShop();
+             PreparedStatement preparedStatementSqlBrand = connection.prepareStatement(sqlBrand);
+             PreparedStatement preparedStatementSqlType = connection.prepareStatement(sqlType);
+             PreparedStatement preparedStatementSqlColor = connection.prepareStatement(sqlColor);
+             PreparedStatement preparedStatementSqlBike = connection.prepareStatement(sqlBike)) {
 
-            preparedStatement = connection.prepareStatement(sqlBrand);
-            preparedStatement.setString(1, bike.getBrand());
-            preparedStatement.setString(2, bike.getBrand());
-            preparedStatement.executeUpdate();
+            preparedStatementSqlBrand.setString(1, bike.getBrand());
+            preparedStatementSqlBrand.setString(2, bike.getBrand());
+            preparedStatementSqlBrand.executeUpdate();
 
-            preparedStatement = connection.prepareStatement(sqlType);
-            preparedStatement.setString(1, bike.getType());
-            preparedStatement.setString(2, bike.getType());
-            preparedStatement.executeUpdate();
+            preparedStatementSqlType.setString(1, bike.getType());
+            preparedStatementSqlType.setString(2, bike.getType());
+            preparedStatementSqlType.executeUpdate();
 
-            preparedStatement = connection.prepareStatement(sqlColor);
-            preparedStatement.setString(1, bike.getColor());
-            preparedStatement.setString(2, bike.getColor());
-            preparedStatement.executeUpdate();
+            preparedStatementSqlColor.setString(1, bike.getColor());
+            preparedStatementSqlColor.setString(2, bike.getColor());
+            preparedStatementSqlColor.executeUpdate();
 
-            preparedStatement = connection.prepareStatement(sqlBike);
-            preparedStatement.setString(1, bike.getModel());
-            preparedStatement.setBigDecimal(2, bike.getPrice());
-            preparedStatement.setInt(3, bike.getQuantity());
-            preparedStatement.setFloat(4, bike.getWeight());
-            preparedStatement.setString(5, bike.getBrand());
-            preparedStatement.setString(6, bike.getType());
-            preparedStatement.setString(7, bike.getColor());
-            preparedStatement.setInt(8, bike.getId());
-            int result = preparedStatement.executeUpdate();
+            preparedStatementSqlBike.setString(1, bike.getModel());
+            preparedStatementSqlBike.setBigDecimal(2, bike.getPrice());
+            preparedStatementSqlBike.setInt(3, bike.getQuantity());
+            preparedStatementSqlBike.setFloat(4, bike.getWeight());
+            preparedStatementSqlBike.setString(5, bike.getBrand());
+            preparedStatementSqlBike.setString(6, bike.getType());
+            preparedStatementSqlBike.setString(7, bike.getColor());
+            preparedStatementSqlBike.setInt(8, bike.getId());
+            int result = preparedStatementSqlBike.executeUpdate();
 
-            connection.commit();
             return result;
 
         } catch (SQLException e) {
-            JdbcUtils.rollbackQuietly(connection);
-            throw e;
-        } finally {
-            JdbcUtils.closeQuietly(preparedStatement);
-            JdbcUtils.closeQuietly(connection);
+            throw new RuntimeException("Failed to Update bike", e);
         }
     }
 
     @Override
-    public int delete(int id) throws SQLException {
+    public int delete(int id) {
         String sqlBike = "DELETE FROM bikes WHERE id = ?";
         String sqlColorBrandType = "DELETE FROM bikes_color WHERE NOT EXISTS " +
                 "(SELECT * FROM bikes WHERE bikes_color.id = bikes.color_id);" +
@@ -203,50 +177,32 @@ public class DaoJDBC implements Dao {
                 "DELETE FROM bikes_type WHERE NOT EXISTS " +
                 "(SELECT * FROM bikes WHERE bikes_type.id = bikes.type_id);";
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = getConnectionShop();
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        try (Connection connection = getConnectionShop();
+             PreparedStatement preparedStatementSqlBike = connection.prepareStatement(sqlBike);
+             PreparedStatement preparedStatementSqlColorBrandType = connection.prepareStatement(sqlColorBrandType)) {
 
-            preparedStatement = connection.prepareStatement(sqlBike);
-            preparedStatement.setInt(1, id);
+            preparedStatementSqlBike.setInt(1, id);
+            int result = preparedStatementSqlBike.executeUpdate();
 
-            int result = preparedStatement.executeUpdate();
+            preparedStatementSqlColorBrandType.executeUpdate();
 
-            preparedStatement = connection.prepareStatement(sqlColorBrandType);
-            preparedStatement.executeUpdate();
-
-            connection.commit();
             return result;
 
         } catch (SQLException e) {
-            JdbcUtils.rollbackQuietly(connection);
-            throw e;
-        } finally {
-            JdbcUtils.closeQuietly(preparedStatement);
-            JdbcUtils.closeQuietly(connection);
+            throw new RuntimeException("Failed to Delete bike", e);
         }
     }
 
     @Override
-    public List<Bike> findAll() throws SQLException {
+    public List<Bike> findAll() {
         String sqlBikes = "SELECT bikes.id,brand,model,type,price,quantity,color,weight FROM bikes " +
                 "JOIN bikes_brand ON bikes.brand_id = bikes_brand.id " +
                 "JOIN bikes_type ON bikes.type_id = bikes_type.id " +
                 "JOIN bikes_color ON bikes.color_id = bikes_color.id ";
 
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnectionShop();
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            statement = connection.createStatement();
-
-            resultSet = statement.executeQuery(sqlBikes);
+        try (Connection connection = getConnectionShop();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlBikes)) {
 
             List<Bike> result = new ArrayList<>();
             while (resultSet.next()) {
@@ -261,16 +217,10 @@ public class DaoJDBC implements Dao {
 
                 result.add(new Bike(bikesId, brand, model, type, price, quantity, color, weight));
             }
-            connection.commit();
             return result;
 
         } catch (SQLException e) {
-            JdbcUtils.rollbackQuietly(connection);
-            throw e;
-        } finally {
-            JdbcUtils.closeQuietly(resultSet);
-            JdbcUtils.closeQuietly(statement);
-            JdbcUtils.closeQuietly(connection);
+            throw new RuntimeException("Failed to FindAll bikes", e);
         }
     }
 }

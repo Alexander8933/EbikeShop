@@ -8,13 +8,15 @@ import java.util.stream.Collectors;
 
 public class DaoCache implements Dao {
     private Map<Integer, Bike> mapBikes = new HashMap<>();
-    private DaoJDBCExceptionHandler dao;
+    private DaoJDBC dao;
+
     public DaoCache() {
         createMapBikes();
     }
+
     private void createMapBikes() {
         if (dao == null) {
-            dao = new DaoJDBCExceptionHandler(new DaoJDBC());
+            dao = new DaoJDBC();
             mapBikes = dao
                     .findAll()
                     .stream()
